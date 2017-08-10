@@ -904,5 +904,7 @@ class Monacoin(Coin):
     TX_COUNT = 2568580
     TX_COUNT_HEIGHT = 1029766
     TX_PER_BLOCK = 2
+    IRC_PREFIX = "E_"
+    IRC_CHANNEL = "#electrum-mona"
     RPC_PORT = 9402
     REORG_LIMIT = 1000
