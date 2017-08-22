@@ -42,7 +42,7 @@ from lib.script import ScriptPubKey
 from lib.tx import Deserializer, DeserializerSegWit, DeserializerAuxPow, \
     DeserializerZcash, DeserializerTxTime, DeserializerReddcoin
 from server.block_processor import BlockProcessor
-from server.daemon import Daemon, DashDaemon, LegacyRPCDaemon
+from server.daemon import Daemon, DashDaemon, LegacyRPCDaemon, FujiDaemon
 from server.session import ElectrumX, DashElectrumX
 
 
@@ -333,6 +333,24 @@ class Bitcoin(Coin):
     TX_PER_BLOCK = 1800
     RPC_PORT = 8332
     PEERS = [
+        'electroncash.bitcoinplug.com s t',
+        'electrum-abc.criptolayer.net s50012',
+        'electroncash.cascharia.com s50002',
+        'bcc.arihanc.com t52001 s52002',
+        'mash.1209l.com s t',
+        'bch.kokx.org s t',
+        'abc.vom-stausee.de t52001 s52002',
+        'abc1.hsmiths.com t60001 s60002',
+        'ELECTRUM.not.fyi p1000 s t',
+        'electrum.hsmiths.com s t',
+    ]
+
+
+class BitcoinSegwit(Bitcoin):
+    NET = "bitcoin-segwit"
+    DESERIALIZER = DeserializerSegWit
+
+    PEERS = [
         'btc.smsys.me s995',
         'electrum.be s t',
         'ELECTRUM.not.fyi p1000 s t',
@@ -347,18 +365,7 @@ class Bitcoin(Coin):
         'ozahtqwp25chjdjd.onion s t',
         'us11.einfachmalnettsein.de s t',
         'ELEX01.blackpole.online s t',
-        'electroncash.cascharia.com s50002',
-        'electrum-abc.criptolayer.net s50012',
-        '35.185.209.69 s t',
-        '35.197.25.235 s t',
-        'bcc.arihanc.com t52001 s52002',
     ]
-
-
-class BitcoinSegwit(Bitcoin):
-    NET = "bitcoin-segwit"
-    DESERIALIZER = DeserializerSegWit
-
 
 class BitcoinTestnet(Bitcoin):
     SHORTNAME = "XTN"
@@ -928,3 +935,24 @@ class Crown(AuxPowMixin, Coin):
     TX_COUNT_HEIGHT = 1268206
     TX_PER_BLOCK = 10
     RPC_PORT = 9341
+
+
+class Fujicoin(Coin):
+    NAME = "Fujicoin"
+    SHORTNAME = "FJC"
+    NET = "mainnet"
+    XPUB_VERBYTES = bytes.fromhex("0488b21e")
+    XPRV_VERBYTES = bytes.fromhex("0488ade4")
+    P2PKH_VERBYTE = bytes.fromhex("24")
+    P2SH_VERBYTES = [bytes.fromhex("10")]
+    WIF_BYTE = bytes.fromhex("a4")
+    GENESIS_HASH = ('adb6d9cfd74075e7f91608add4bd2a2e'
+                    'a636f70856183086842667a1597714a0')
+#    DESERIALIZER = DeserializerSegWit
+    DAEMON = FujiDaemon
+    TX_COUNT = 170478
+    TX_COUNT_HEIGHT = 1521676
+    TX_PER_BLOCK = 1
+    RPC_PORT = 3776
+#    REORG_LIMIT = 1000
+
