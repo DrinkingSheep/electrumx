@@ -31,7 +31,7 @@ class Env(lib_util.LoggedClass):
         self.obsolete(['UTXO_MB', 'HIST_MB', 'NETWORK'])
         self.db_dir = self.required('DB_DIRECTORY')
         self.daemon_url = self.required('DAEMON_URL')
-        coin_name = self.default('COIN', 'Monacoin')
+        coin_name = self.required('COIN')
         network = self.default('NET', 'mainnet')
         self.coin = Coin.lookup_coin_class(coin_name, network)
         self.cache_MB = self.integer('CACHE_MB', 1200)
@@ -183,3 +183,12 @@ class Env(lib_util.LoggedClass):
             import uvloop
             return uvloop.EventLoopPolicy()
         raise self.Error('unknown event loop policy "{}"'.format(policy))
+
+    def cs_host(self):
+        '''Returns the 'host' argument to pass to asyncio's create_server
+        call.  The result can be a single host name string, a list of
+        host name strings, or an empty string to bind to all interfaces.'''
+        result = self.host.split(',')
+        if len(result) == 1:
+            result = result[0]
+        return result

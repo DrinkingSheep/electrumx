@@ -42,6 +42,7 @@ def peers_from_env(env):
         'protocol_min': version.PROTOCOL_MIN,
         'protocol_max': version.PROTOCOL_MAX,
         'genesis_hash': env.coin.GENESIS_HASH,
+        'hash_function': 'sha256',
     }
 
     return [Peer(ident.host, features, 'env') for ident in env.identities]
@@ -561,7 +562,12 @@ class PeerManager(util.LoggedClass):
         else:
             create_connection = self.loop.create_connection
 
-        local_addr = (self.env.host, None) if self.env.host else None
+        # Use our listening Host/IP for outgoing connections so our
+        # peers see the correct source.
+        host = self.env.cs_host()
+        if isinstance(host, list):
+            host = host[0]
+        local_addr = (host, None) if host else None
 
         protocol_factory = partial(PeerSession, peer, self, kind)
         coro = create_connection(protocol_factory, peer.host, port, ssl=sslc,
