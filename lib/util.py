@@ -34,7 +34,7 @@ import logging
 import re
 import sys
 from collections import Container, Mapping
-from struct import pack
+from struct import pack, Struct
 
 
 class LoggedClass(object):
@@ -279,6 +279,13 @@ def protocol_tuple(s):
     except Exception:
         return (0, )
 
+def protocol_version_string(ptuple):
+    '''Convert a version tuple such as (1, 2) to "1.2".
+    There is always at least one dot, so (1, ) becomes "1.0".'''
+    while len(ptuple) < 2:
+        ptuple += (0, )
+    return '.'.join(str(p) for p in ptuple)
+
 def protocol_version(client_req, server_min, server_max):
     '''Given a client protocol request, return the protocol version
     to use as a tuple.
@@ -302,3 +309,11 @@ def protocol_version(client_req, server_min, server_max):
         result = None
 
     return result
+
+unpack_int32_from = Struct('<i').unpack_from
+unpack_int64_from = Struct('<q').unpack_from
+unpack_uint16_from = Struct('<H').unpack_from
+unpack_uint32_from = Struct('<I').unpack_from
+unpack_uint64_from = Struct('<Q').unpack_from
+
+hex_to_bytes = bytes.fromhex
